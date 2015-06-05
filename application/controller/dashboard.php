@@ -59,6 +59,38 @@ class Dashboard extends Controller
         
         header('location: ' . URL . 'dashboard');
     }
+    
+    public function edituser() {
+        $userinfo = $this->model->retriveUser($this->user);
+        $name = explode(" ", $userinfo->name);
+        $email = $userinfo->email;
+        require APP . 'view/_templates/header.php';
+        require APP . 'view/dashboard/edituser.php';
+        require APP . 'view/_templates/footer.php';
+    }
+    
+    public function checkpass($pass) {
+        $count = $this->model->checkPass(md5($pass));
+        echo $count;
+    }
+    
+    public function edituserdetail() {
+        $first = $_POST['firstname'];
+        $last = $_POST['lastname'];
+        $old_pass = $_POST['oldpass'];
+        $password = $_POST['password'];
+        $repassword = $_POST['repassword'];
+        $email = $_POST['email'];
+        
+        $name = $first . ' ' . $last;
+        
+        if ($password != $repassword) {
+            header('location: ' . URL . 'error');
+        }
+        
+        $this->model->editUser($name, $username, $password, $email);
+        header('location: ' . URL . 'dashboard');
+    }
 
     public function logout() {
         $this->model->unsetUser($this->user);

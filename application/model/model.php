@@ -61,6 +61,16 @@ class Model
         return $count;
     }
     
+    public function checkPass($pass) {
+        $sql = "SELECT password FROM users WHERE password=:pass";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':pass' => $pass);
+        $query->execute($parameters);
+        $query->fetch();
+        $count = $query->rowcount();
+        return $count;
+    }
+    
     public function fetchName($user) {
         $sql = "SELECT name FROM users WHERE username=:user";
         $query = $this->db->prepare($sql);
@@ -91,6 +101,13 @@ class Model
         $query->execute($parameters);
     }
     
+    public function editUser($name, $username, $password, $email) {
+        $sql = "UPDATE users SET name=:name, password=:password, email=:email WHERE username=:username";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':name' => $name, ':username' => $username, ':password' => md5($password), ':email' => $email);
+        $query->execute($parameters);
+    }
+
     public function fetchBillsByUsers($user) {
         $sql = "SELECT trans_id, date, description, amount FROM transaction WHERE username=:user ORDER BY trans_id DESC";
         $query = $this->db->prepare($sql);
@@ -285,6 +302,14 @@ class Model
         return $query->fetchall();
     }
     
+    public function retriveUser($username) {
+        $sql = "SELECT name, password, email FROM users WHERE username=:username";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':username' => $username);
+        $query->execute($parameters);
+        return $query->fetch();
+    }
+
     public function fetchSplit($id) {
         $sql = "SELECT username, (SELECT name FROM users WHERE users.username=split.username) as name FROM split WHERE trans_id=:id";
         $query = $this->db->prepare($sql);
