@@ -197,7 +197,106 @@ class Model
         }
     }
     
+    public function editBillWithImage($id, $date, $description, $amount, $members, $image) {
+        $targetdir = 'img/';
+        $targetfile = $targetdir . $id;
+        $imagetype = pathinfo($image['name'], PATHINFO_EXTENSION);
+        $check = getimagesize($image['tmp_name']);
+        $uploadOk = 1;
+        if ($check == FALSE) {
+            $uploadOk = 0;
+        }
+        if ($imagetype != 'jpg' && $imagetype != 'png' && $imagetype != 'jpeg' && $imagetype != 'gif') {
+            $uploadOk = 0;
+        }
+        if ($uploadOk == 1) {
+            move_uploaded_file($image['tmp_name'], $targetfile . '.jpg');
+        }
+        
+        //fetch old amount from transaction
+        $sql = "SELECT amount, username FROM transaction WHERE trans_id=:id";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':id'=> $id);
+        $query->execute($parameters);
+        $temp_amount = $query->fetch();
+        
+        //update user bill balance
+        $sql = "SELECT balance FROM users WHERE username=:username";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':username'=> $temp_amount->username);
+        $query->execute($parameters);
+        $old_balance = $query->fetch();
+        
+        $new_balance = $old_balance->balance - $temp_amount->amount + $amount;
+        
+        $sql = "UPDATE users SET balance=:new_balance WHERE username=:username";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':new_balance' => $new_balance, ':username' => $temp_amount->username);
+        $query->execute($parameters);
+        
+        //fetch users from split
+        $sql = "SELECT username FROM split WHERE trans_id=:id";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':id'=> $id);
+        $query->execute($parameters);
+        $temp_users = $query->fetchall();
+        $num = $query->rowcount();
+        
+        //update transaction
+        $sql = "UPDATE transaction SET date=:date, description=:description, amount=:amount WHERE trans_id=:id";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':date' => $date, ':description' => $description, ':amount' => $amount, ':id' => $id);
+        $query->execute($parameters);
+        
+        //delete users in split
+        $sql = "DELETE FROM split WHERE trans_id=:id";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':id'=> $id);
+        $query->execute($parameters);
+        
+        //plus old amount from users as per old users
+        $old_split = $temp_amount->amount/$num;
+        foreach ($temp_users as $temp_user) {
+            $sql = "SELECT balance FROM users WHERE username=:username";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':username' => $temp_user->username);
+            $query->execute($parameters);
+            $temp_balance = $query->fetch();
+            
+            $balance = $temp_balance->balance + $old_split;
+            $sql = "UPDATE users SET balance=:balance WHERE username=:username";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':balance' => $balance, ':username' => $temp_user->username);
+            $query->execute($parameters);
+        }
+        
+        //minus new amount in users as per new users and insert users in split
+        $num = count($members);
+        $split = $amount/$num;
+        foreach ($members as $member) {
+            $sql = "SELECT balance FROM users WHERE username=:username";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':username' => $member);
+            $query->execute($parameters);
+            $temp_balance = $query->fetch();
+            
+            $balance = $temp_balance->balance - $split;
+            $sql = "UPDATE users SET balance=:balance WHERE username=:username";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':balance' => $balance, ':username' => $member);
+            $query->execute($parameters);
+            
+            $sql = "INSERT INTO split (trans_id, username) VALUES (:id, :username)";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':id' => $id, ':username' => $member);
+            $query->execute($parameters);
+        }
+    }
+    
     public function deleteBill($id) {
+        $filename = 'img/' . $id  . '.jpg';
+        unlink($filename);
+        
         //fetch old amount from transaction
         $sql = "SELECT amount FROM transaction WHERE trans_id=:id";
         $query = $this->db->prepare($sql);
@@ -260,6 +359,66 @@ class Model
         $query = $this->db->prepare($sql);
         $parameters = array(':amount' => $amount, ':description' => $description, ':date' => $date, ':user' => $user);
         $query->execute($parameters);
+        
+        $num = count($members);
+        $split = $amount/$num;
+        foreach ($members as $member) {
+            $sql = "SELECT balance FROM users WHERE username=:username";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':username' => $member);
+            $query->execute($parameters);
+            $temp_balance = $query->fetch();
+            
+            $balance = $temp_balance->balance - $split;
+            $sql = "UPDATE users SET balance=:balance WHERE username=:username";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':balance' => $balance, ':username' => $member);
+            $query->execute($parameters);
+            
+            $sql = "INSERT INTO split (trans_id, username) VALUES ((SELECT trans_id FROM transaction ORDER BY trans_id DESC LIMIT 1), :username)";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':username' => $member);
+            $query->execute($parameters);
+        }
+        
+        $sql = "SELECT balance FROM users WHERE username=:username";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':username' => $user);
+        $query->execute($parameters);
+        $temp_balance = $query->fetch();
+        
+        $balance = $temp_balance->balance + $amount;
+        $sql = "UPDATE users SET balance=:balance WHERE username=:username";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':balance' => $balance, ':username' => $user);
+        $query->execute($parameters);
+    }
+    
+    public function addBillWithImage($date, $description, $amount, $user, $members, $image) {
+        $sql = "INSERT INTO transaction (amount, description, date, username) VALUES (:amount, :description, :date, :user)";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':amount' => $amount, ':description' => $description, ':date' => $date, ':user' => $user);
+        $query->execute($parameters);
+        
+        $sql = "SELECT trans_id FROM transaction ORDER BY trans_id DESC LIMIT 1";
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        $f_name = $query->fetch();
+        
+        $targetdir = 'img/';
+        $targetfile = $targetdir . $f_name->trans_id;
+        $imagetype = pathinfo($image['name'], PATHINFO_EXTENSION);
+        $check = getimagesize($image['tmp_name']);
+        $uploadOk = 1;
+        if ($check == FALSE) {
+            $uploadOk = 0;
+        }
+        if ($imagetype != 'jpg' && $imagetype != 'png' && $imagetype != 'jpeg' && $imagetype != 'gif') {
+            $uploadOk = 0;
+        }
+        if ($uploadOk == 1) {
+            move_uploaded_file($image['tmp_name'], $targetfile . '.jpg');
+        }
         
         $num = count($members);
         $split = $amount/$num;

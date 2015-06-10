@@ -3,8 +3,10 @@
     <head>
         <meta charset="utf-8">
         <title>Split Expanse</title>
-        <meta name="description" content="">
+        <meta name="description" content="Manage bills easily">
+        <meta name="keywords" content="splitbill,splitbills,split bill,split bills,splitexpanse,split expanse,manage bill,manage bills">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="<?php echo URL; ?>img/se.png" type="image/png">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">

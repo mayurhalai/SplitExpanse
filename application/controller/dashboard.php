@@ -37,7 +37,8 @@ class Dashboard extends Controller
     }
     
     public function add() {
-        $id = null;
+        $id = NULL;
+        $image = NULL;
         if (isset($_POST['id']) && $_POST['id'] != '') {
             $id = $_POST['id'];
         }
@@ -45,10 +46,21 @@ class Dashboard extends Controller
         $description = $_POST['description'];
         $date = $_POST['date'];
         $members = $_POST['members'];
+        if (!empty($_FILES['image'])) {
+            $image = $_FILES['image'];
+        }
         if ($id == NULL) {
-            $this->model->addBill($date, $description, $amount, $this->user, $members);
+            if ($image == NULL) {
+                $this->model->addBill($date, $description, $amount, $this->user, $members);
+            } else {
+                $this->model->addBillWithImage($date, $description, $amount, $this->user, $members, $image);
+            }
         } else {
-            $this->model->editBill($id, $date, $description, $amount, $members);
+            if ($image == NULL) {
+                $this->model->editBill($id, $date, $description, $amount, $members);
+            } else {
+                $this->model->editBillWithImage($id, $date, $description, $amount, $members, $image);
+            }
         }
         
         header('location: ' . URL . 'dashboard');

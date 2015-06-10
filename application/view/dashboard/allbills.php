@@ -11,7 +11,7 @@
     <div style="width: 80%">
         <table class="table table-striped">
             <tr>
-                <th>No.</th><th>Date</th><th>Description</th><th>Amount</th><th>Bill Owner</th><th>Splitters</th>
+                <th>No.</th><th>Date</th><th>Description</th><th>Amount</th><th>Bill Owner</th><th>Splitters</th><th>Bill Image</th>
             </tr>
             <tr ng-repeat="bill in bills">
                 <td>{{$index + 1}}</td>
@@ -20,6 +20,7 @@
                 <td><span class="glyphicon glyphicon-euro"></span> {{bill.amount}}</td>
                 <td>{{bill.name}}</td>
                 <td><button class="btn btn-info" ng-click="fetchSplit(bill.trans_id)"><span class="glyphicon glyphicon-user"></span> Bill Split</button></td>
+                <td><a target="_blank" href="<?php echo URL; ?>img/{{bill.trans_id}}.jpg" class="btn btn-info"><span class="glyphicon glyphicon-film"></span> Bill Image</a></td>
             </tr>
         </table>
     </div>

@@ -10,7 +10,7 @@
     </div>
     <a name="form"></a>
     <div style="position: absolute; right: 40px; width: 15%">
-        <form action="<?php echo URL; ?>dashboard/add" method="post">
+        <form action="<?php echo URL; ?>dashboard/add" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="{{id}}" />
             <div class="form-group">
                 <label for="amount">Amount(<span class="glyphicon glyphicon-euro"></span>):</label>
@@ -25,6 +25,10 @@
                 <input type="text" class="form-control" name="date" ng-model="date" required />
             </div>
             <div class="form-group">
+                <label for="image">Image:</label>
+                <input type="file" name="image" />
+            </div>
+            <div class="form-group">
                 <label for="users">Members (Who split Bill):</label><br />
                 <?php
                 foreach ($users as $user) {
@@ -33,12 +37,13 @@
                 ?>
             </div>
             <button type="submit" class="btn btn-success">Submit</button>
+            <button type="reset" class="btn btn-danger" ng-click="reset()">Reset</button>
         </form>    
     </div>
     <div style="width: 80%">
         <table class="table table-striped">
             <tr>
-                <th>No.</th><th>Date</th><th>Description</th><th>Amount</th><th>Splitters</th><th>Edit</th><th>Delete</th>
+                <th>No.</th><th>Date</th><th>Description</th><th>Amount</th><th>Splitters</th><th>Bill Image</th><th>Edit</th><th>Delete</th>
             </tr>
             <tr ng-repeat="bill in bills">
                 <td>{{$index + 1}}</td>
@@ -46,6 +51,7 @@
                 <td>{{bill.description}}</td>
                 <td><span class="glyphicon glyphicon-euro"></span> {{bill.amount}}</td>
                 <td><button class="btn btn-info" ng-click="fetchSplit(bill.trans_id)"><span class="glyphicon glyphicon-user"></span> Bill Split</button></td>
+                <td><a target="_blank" href="<?php echo URL; ?>img/{{bill.trans_id}}.jpg" class="btn btn-info"><span class="glyphicon glyphicon-film"></span> Bill Image</a></td>
                 <td><a href="#form" class="btn btn-success" ng-click="setForm($index)"><span class="glyphicon glyphicon-pencil"></span> Edit</a></td>
                 <td><a href="<?php echo URL; ?>dashboard/delete/{{bill.trans_id}}" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</a></td>
             </tr>
@@ -66,6 +72,9 @@ app.controller('billCtrl', function ($scope, $http) {
             $scope.date = fbill[$number].date;
         }
     });
+    $scope.reset = function () {
+        $scope.id = "";
+    }
     $scope.fetchSplit = function ($id) {
         $http.get("<?php echo URL; ?>dashboard/fetchsplit/" + $id).success(function (response) {
             var users = response.names;
