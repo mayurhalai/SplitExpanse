@@ -5,7 +5,7 @@
             <a href="<?php echo URL; ?>dashboard/allbills" class="btn btn-warning">All Bills</a>
             <a href="<?php echo URL; ?>dashboard/allbalances" class="btn btn-warning">All Balances</a>
             <a href="<?php echo URL; ?>dashboard/edituser" class="btn btn-warning">Edit Your Details</a>
-            <p class="btn btn-warning" ng-click="retrive()" title="Click to Refresh!">Your Balance: {{balance}}</p>
+            <p class="btn btn-warning" ng-click="retrive()" title="Click to Refresh!">Your Balance: <span class="glyphicon glyphicon-euro"></span>{{balance}}</p>
         </div>
     </div>
     <a name="form"></a>

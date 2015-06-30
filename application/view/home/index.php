@@ -30,6 +30,9 @@
         </form>
         </div>
     </div>
+    <div style="position: relative; top: 60px">
+        Also an Android App Available.<br />To download an app <a href="<?php echo URL; ?>app/SplitExpanse.apk" download>Click here</a>
+    </div>
 </div>
 <script>
     $(document).ready(function () {

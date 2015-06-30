@@ -75,7 +75,6 @@ class Dashboard extends Controller
     public function edituser() {
         $userinfo = $this->model->retriveUser($this->user);
         $name = explode(" ", $userinfo->name);
-        $email = $userinfo->email;
         require APP . 'view/_templates/header.php';
         require APP . 'view/dashboard/edituser.php';
         require APP . 'view/_templates/footer.php';
@@ -114,20 +113,17 @@ class Dashboard extends Controller
     }
     public function fetchbills() {
         $bills = $this->model->fetchBillsByUsers($this->user);
-        $bills = $this->sqltojson($bills, 'bills');
-        echo $bills;
+        echo '{"bills":' . json_encode($bills, JSON_UNESCAPED_SLASHES) . '}';
     }
     
     public function fetchallbills() {
         $bills = $this->model->fetchAllBills();
-        $bills = $this->sqltojson($bills, 'bills');
-        echo $bills;
+        echo '{"bills":' . json_encode($bills, JSON_UNESCAPED_SLASHES) . '}';
     }
     
     public function fetchsplit($id) {
         $names = $this->model->fetchSplit($id);
-        $names = $this->sqltojson($names, 'names');
-        echo $names;
+        echo '{"names":' . json_encode($names, JSON_UNESCAPED_SLASHES) . '}';
     }
     
     public function fetchbalance() {
@@ -137,17 +133,15 @@ class Dashboard extends Controller
     
     public function fetchallbalance() {
         $users = $this->model->fetchUser();
-        $users = $this->sqltojson($users, 'users');
-        echo $users;
+        echo '{"users":' . json_encode($users, JSON_UNESCAPED_SLASHES) . '}';
     }
     
     public function fetchbillsbyuser($username) {
         $bills = $this->model->fetchBillsByUsers($username);
-        $bills = $this->sqltojson($bills, 'bills');
-        echo $bills;
+        echo '{"bills":' . json_encode($bills, JSON_UNESCAPED_SLASHES) . '}';
     }
 
-    private function sqltojson($data, $name) {
+/*    private function sqltojson($data, $name) {
         $out = '{"' . $name . '": [';
         foreach ($data as $obj) {
             $out = $out . '{';
@@ -160,5 +154,5 @@ class Dashboard extends Controller
         $out = rtrim($out, ',');
         $out = $out . ']}';
         return $out;    
-    }
+    }*/
 }

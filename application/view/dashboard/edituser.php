@@ -1,11 +1,11 @@
 <div ng-app="myApp" ng-controller="validateForm">
     <div style="position: relative">
         <div class="btn-group btn-group-justified">
-            <a href="" class="btn btn-warning">Your Bills</a>
+            <a href="<?php echo URL; ?>dashboard" class="btn btn-warning">Your Bills</a>
             <a href="<?php echo URL; ?>dashboard/allbills" class="btn btn-warning">All Bills</a>
             <a href="<?php echo URL; ?>dashboard/allbalances" class="btn btn-warning">All Balances</a>
             <a href="" class="btn btn-warning">Edit Your Details</a>
-            <p class="btn btn-warning" ng-click="retrive()" title="Click to Refresh!">Your Balance: {{balance}}</p>
+            <p class="btn btn-warning" ng-click="retrive()" title="Click to Refresh!">Your Balance: <span class="glyphicon glyphicon-euro"></span>{{balance}}</p>
         </div>
     </div>
     <div class="container" style="position: relative; top:100px;  font-family: Arial; color: #2E8AE6">
@@ -36,7 +36,7 @@
                 </tr>
                 <tr>
                     <td style="text-align: right"><button type="reset" class="btn btn-danger" ng-click="reset()">Reset Field</button></td>
-                    <td style="text-align: right"><button type="submit" class="btn btn-success" ng-disabled="!PassOk || !UserOk">Register</button></td>
+                    <td style="text-align: right"><button type="submit" class="btn btn-success" ng-disabled="!PassOk || !UserOk">Update</button></td>
                 </tr>
             </table>/
         </form>

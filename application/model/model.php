@@ -303,63 +303,67 @@ class Model
         $parameters = array(':id'=> $id);
         $query->execute($parameters);
         $temp_amount = $query->fetch();
+        $row_count = $query->rowcount();
+        if ($row_count>0) {
         
-        //fetch users from split
-        $sql = "SELECT username FROM split WHERE trans_id=:id";
-        $query = $this->db->prepare($sql);
-        $parameters = array(':id'=> $id);
-        $query->execute($parameters);
-        $temp_users = $query->fetchall();
-        $num = $query->rowcount();
-        
-        //reduce bill amount from user balance 
-        $sql = "SELECT balance, username, (SELECT amount FROM transaction WHERE trans_id=:id) as amount FROM users WHERE username=(SELECT username FROM transaction WHERE trans_id=:id)";
-        $query = $this->db->prepare($sql);
-        $parameters = array(':id' => $id);
-        $query->execute($parameters);
-        $temp = $query->fetch();
-        
-        $balance = $temp->balance - $temp->amount;
-        $sql = "UPDATE users SET balance=:balance WHERE username=:username";
-        $query = $this->db->prepare($sql);
-        $parameters = array(':balance' => $balance, ':username' => $temp->username);
-        $query->execute($parameters);
-        
-        //delete transaction
-        $sql = "DELETE FROM transaction WHERE trans_id=:id";
-        $query = $this->db->prepare($sql);
-        $parameters = array(':id' => $id);
-        $query->execute($parameters);
-        
-        //delete users in split
-        $sql = "DELETE FROM split WHERE trans_id=:id";
-        $query = $this->db->prepare($sql);
-        $parameters = array(':id'=> $id);
-        $query->execute($parameters);
-        
-        //plus old amount from users as per old users
-        $split = $temp_amount->amount/$num;
-        foreach ($temp_users as $temp_user) {
-            $sql = "SELECT balance FROM users WHERE username=:username";
+            //fetch users from split
+            $sql = "SELECT username FROM split WHERE trans_id=:id";
             $query = $this->db->prepare($sql);
-            $parameters = array(':username' => $temp_user->username);
+            $parameters = array(':id'=> $id);
             $query->execute($parameters);
-            $temp_balance = $query->fetch();
-            
-            $balance = $temp_balance->balance + $split;
+            $temp_users = $query->fetchall();
+            $num = $query->rowcount();
+
+            //reduce bill amount from user balance 
+            $sql = "SELECT balance, username, (SELECT amount FROM transaction WHERE trans_id=:id) as amount FROM users WHERE username=(SELECT username FROM transaction WHERE trans_id=:id)";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':id' => $id);
+            $query->execute($parameters);
+            $temp = $query->fetch();
+
+            $balance = $temp->balance - $temp->amount;
             $sql = "UPDATE users SET balance=:balance WHERE username=:username";
             $query = $this->db->prepare($sql);
-            $parameters = array(':balance' => $balance, ':username' => $temp_user->username);
+            $parameters = array(':balance' => $balance, ':username' => $temp->username);
             $query->execute($parameters);
+
+            //delete transaction
+            $sql = "DELETE FROM transaction WHERE trans_id=:id";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':id' => $id);
+            $query->execute($parameters);
+
+            //delete users in split
+            $sql = "DELETE FROM split WHERE trans_id=:id";
+            $query = $this->db->prepare($sql);
+            $parameters = array(':id'=> $id);
+            $query->execute($parameters);
+
+            //plus old amount from users as per old users
+            $split = $temp_amount->amount/$num;
+            foreach ($temp_users as $temp_user) {
+                $sql = "SELECT balance FROM users WHERE username=:username";
+                $query = $this->db->prepare($sql);
+                $parameters = array(':username' => $temp_user->username);
+                $query->execute($parameters);
+                $temp_balance = $query->fetch();
+
+                $balance = $temp_balance->balance + $split;
+                $sql = "UPDATE users SET balance=:balance WHERE username=:username";
+                $query = $this->db->prepare($sql);
+                $parameters = array(':balance' => $balance, ':username' => $temp_user->username);
+                $query->execute($parameters);
+            }
         }
     }
     
     public function addBill($date, $description, $amount, $user, $members) {
+        //add record
         $sql = "INSERT INTO transaction (amount, description, date, username) VALUES (:amount, :description, :date, :user)";
         $query = $this->db->prepare($sql);
         $parameters = array(':amount' => $amount, ':description' => $description, ':date' => $date, ':user' => $user);
         $query->execute($parameters);
-        
+        //devide bill into members
         $num = count($members);
         $split = $amount/$num;
         foreach ($members as $member) {
@@ -380,7 +384,7 @@ class Model
             $parameters = array(':username' => $member);
             $query->execute($parameters);
         }
-        
+        //add bill amount to bill owner
         $sql = "SELECT balance FROM users WHERE username=:username";
         $query = $this->db->prepare($sql);
         $parameters = array(':username' => $user);
@@ -580,5 +584,28 @@ class Model
         $query = $this->db->prepare($sql);
         $parameters = array(':username' => $username);
         $query->execute($parameters);
+    }
+    
+    //For Mobile
+    public function setMobileUser($token, $username) {
+        $sql = "UPDATE users SET token=:token WHERE username=:username";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':token' => $token, ':username' => $username);
+        $query->execute($parameters);
+    }
+    
+    public function unsetMobileUser($username) {
+        $sql = "UPDATE users SET token='none' WHERE username=:username";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':username' => $username);
+        $query->execute($parameters);
+    }
+    
+    public function retriveMobileUser($token) {
+        $sql = "SELECT username FROM users WHERE token=:token";
+        $query = $this->db->prepare($sql);
+        $parameters = array(':token' => $token);
+        $query->execute($parameters);
+        return $query->fetch();
     }
 }
