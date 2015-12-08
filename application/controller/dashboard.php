@@ -91,7 +91,6 @@ class Dashboard extends Controller
         $old_pass = $_POST['oldpass'];
         $password = $_POST['password'];
         $repassword = $_POST['repassword'];
-        $email = $_POST['email'];
         
         $name = $first . ' ' . $last;
         
@@ -99,7 +98,7 @@ class Dashboard extends Controller
             header('location: ' . URL . 'error');
         }
         
-        $this->model->editUser($name, $username, $password, $email);
+        $this->model->editUser($name, $username, $password);
         header('location: ' . URL . 'dashboard');
     }
 
