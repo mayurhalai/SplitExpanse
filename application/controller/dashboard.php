@@ -98,6 +98,7 @@ class Dashboard extends Controller
             header('location: ' . URL . 'error');
         }
         
+        $username = $this->user;
         $this->model->editUser($name, $username, $password);
         header('location: ' . URL . 'dashboard');
     }
