@@ -101,10 +101,10 @@ class Model
         $query->execute($parameters);
     }
     
-    public function editUser($name, $username, $password, $email) {
-        $sql = "UPDATE users SET name=:name, password=:password, email=:email WHERE username=:username";
+    public function editUser($name, $username, $password) {
+        $sql = "UPDATE users SET name=:name, password=:password WHERE username=:username";
         $query = $this->db->prepare($sql);
-        $parameters = array(':name' => $name, ':username' => $username, ':password' => md5($password), ':email' => $email);
+        $parameters = array(':name' => $name, ':username' => $username, ':password' => md5($password));
         $query->execute($parameters);
     }
 
