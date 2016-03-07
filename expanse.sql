@@ -19,7 +19,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `expanse`
 --
-
+DROP DATABASE IF EXIST `expanse`;
+CREATE DATABASE `expanse`;
+USE `expanse`;
 -- --------------------------------------------------------
 
 --
