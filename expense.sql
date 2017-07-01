@@ -17,11 +17,11 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `expanse`
+-- Database: `expense`
 --
-DROP DATABASE IF EXISTS `expanse`;
-CREATE DATABASE `expanse`;
-USE `expanse`;
+DROP DATABASE IF EXISTS `expense`;
+CREATE DATABASE `expense`;
+USE `expense`;
 -- --------------------------------------------------------
 
 --
