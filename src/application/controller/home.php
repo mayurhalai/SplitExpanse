@@ -49,7 +49,7 @@ class Home extends Controller
         if ($this->c_model->retriveUser()) {
             $user = $this->model->retriveUserByCookie($this->c_model->retriveUser());
             if (!empty($user)) {
-                $this->username = $user->username;
+                $this->username = $user['username'];
                 @session_start();
                 $_SESSION["logged"] = TRUE;
                 $_SESSION["user"] = $this->username;

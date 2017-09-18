@@ -11,7 +11,7 @@ class Mobile extends Controller {
                 echo 'You are not Logged in.';
                 exit();
             } else {
-                $this->user = $user->username;
+                $this->user = $user['username'];
             }
         } else {
             echo 'You are not Logged in.';

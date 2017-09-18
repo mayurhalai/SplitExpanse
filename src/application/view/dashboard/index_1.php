@@ -19,7 +19,7 @@
                 <label for="users">Members (Who split Bill):</label><br />
                 <?php
                 foreach ($users as $user) {
-                    echo '<input type="checkbox" name="members[]" value="' . $user->username . '" ' . ($user->common ? 'checked="checked"' : '') . '" />' . $user->name . '<br />';
+                    echo '<input type="checkbox" name="members[]" value="' . $user['username'] . '" ' . ($user['common'] ? 'checked="checked"' : '') . '" />' . $user['name'] . '<br />';
                 }
                 ?>
             </div>

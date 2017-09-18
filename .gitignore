@@ -1,0 +1,4 @@
+.buildpath
+.project
+.settings
+docker/mysql-data/

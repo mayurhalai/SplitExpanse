@@ -13,8 +13,8 @@ define('URL', URL_PROTOCOL . URL_DOMAIN . URL_SUB_FOLDER);
  * Configuration for: Database
  */
 define('DB_TYPE', 'mysql');
-define('DB_HOST', '127.0.0.1');
+define('DB_HOST', 'mysql');
 define('DB_NAME', 'expense');
-define('DB_USER', 'mayur');
-define('DB_PASS', 'mayur');
+define('DB_USER', 'root');
+define('DB_PASS', 'admin');
 define('DB_CHARSET', 'utf8');

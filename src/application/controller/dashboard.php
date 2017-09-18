@@ -74,7 +74,7 @@ class Dashboard extends Controller
     
     public function edituser() {
         $userinfo = $this->model->retriveUser($this->user);
-        $name = explode(" ", $userinfo->name);
+        $name = explode(" ", $userinfo['name']);
         require APP . 'view/_templates/header.php';
         require APP . 'view/dashboard/edituser.php';
         require APP . 'view/_templates/footer.php';
@@ -128,7 +128,7 @@ class Dashboard extends Controller
     
     public function fetchbalance() {
         $balance = $this->model->fetchBalance($this->user);
-        echo $balance->balance;
+        echo $balance['balance'];
     }
     
     public function fetchallbalance() {

@@ -5,16 +5,16 @@
         </tr>
         <?php foreach ($transactions as $transaction) { ?>
             <tr>
-                <td><?php echo htmlspecialchars($transaction->name); ?></td>
-                <?php if ($transaction->type == 'receive') { ?>
-                <td><?php echo htmlspecialchars(-$transaction->amount); ?></td>
+                <td><?php echo htmlspecialchars($transaction['name']); ?></td>
+                <?php if ($transaction['type'] == 'receive') { ?>
+                <td><?php echo htmlspecialchars(-$transaction['amount']); ?></td>
                 <td></td>
                 <?php } else { ?>
                 <td></td>
-                <td><?php echo htmlspecialchars($transaction->amount); ?></td>
+                <td><?php echo htmlspecialchars($transaction['amount']); ?></td>
                 <?php } ?>
                 <td>
-                    <a href="<?php echo URL . 'admin/delete/' . $transaction->trans_id; ?>" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</a>
+                    <a href="<?php echo URL . 'admin/delete/' . $transaction['trans_id']; ?>" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Delete</a>
                 </td>
             </tr>
         <?php } ?>
