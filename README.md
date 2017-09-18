@@ -14,3 +14,6 @@ set db password in docker/docker-compose.yml at (default password: admin)
       MYSQL_ROOT_PASSWORD: admin
 
 also make changes to application/config/config.php accordingly.
+
+### Web admin password
+    Default password will be 'collins', this can be changed on admin table by providing MD5 hash of password.
