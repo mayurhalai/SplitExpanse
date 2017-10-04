@@ -15,7 +15,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: right"><button type="submit" class="button">Login</button></td>
+                    <td style="text-align: right"><button type="submit" class="button" id="login">Login</button></td>
                 </tr>
             </form>
         </table>

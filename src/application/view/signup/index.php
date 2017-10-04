@@ -33,7 +33,7 @@
             <td style="text-align: right"><button type="reset" class="btn btn-danger" ng-click="reset()">Reset Field</button></td>
             <td style="text-align: right"><button type="submit" class="btn btn-success" ng-disabled="!PassOk || !UserOk">Register</button></td>
         </tr>
-    </table>/
+    </table>
     </form>
 </div>
 <script type="text/javascript">

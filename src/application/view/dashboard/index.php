@@ -8,7 +8,7 @@
             <p class="btn btn-warning" ng-click="retrive()" title="Click to Refresh!">Your Balance: <span class="glyphicon glyphicon-euro"></span>{{balance}}</p>
         </div>
     </div>
-    <a name="form"></a>
+    <a name="dashboard"></a>
     <div style="position: absolute; right: 40px; width: 15%">
         <form action="<?php echo URL; ?>dashboard/add" method="post" enctype="multipart/form-data">
             <input type="hidden" name="id" value="{{id}}" />
