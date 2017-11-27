@@ -16,6 +16,7 @@ services:
       - mysql
     networks:
       - split_expanse
+    restart: always
   mysql:
     image: mysql
     environment:
@@ -26,3 +27,4 @@ services:
       - "./mysql-data:/var/lib/mysql"
     networks:
       - split_expanse
+    restart: always

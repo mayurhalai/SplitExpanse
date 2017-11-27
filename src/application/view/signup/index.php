@@ -9,8 +9,8 @@
         <tr>
             <td style="text-align: left">Username: </td>
             <td><input class="inputbox" type="text" name="username" placeholder="Username" ng-model="user" ng-keyup="checkUser()" required /></td>
-            <td><span style="color: red" ng-show="!UserOk"><span class="glyphicon glyphicon-remove"></span> Invalid Username</span>
-                <span style="color: green" ng-show="UserOk"><span class="glyphicon glyphicon-ok"></span> Username alright</span>
+            <td><span style="color: red" id="username-error" ng-show="!UserOk"><span class="glyphicon glyphicon-remove"></span> Invalid Username</span>
+                <span style="color: green" id="username-ok" ng-show="UserOk"><span class="glyphicon glyphicon-ok"></span> Username alright</span>
             </td>
         </tr>
         <tr>
@@ -20,8 +20,8 @@
         <tr>
             <td style="text-align: left">Re-type Password: </td>
             <td><input class="inputbox" type="password" name="repassword" placeholder="Re-type Password" ng-model="repass" ng-keyup="checkPass()" /></td>
-            <td><span style="color: red" ng-show="!PassOk"><span class="glyphicon glyphicon-remove"></span> Password does not match</span>
-                <span style="color: green" ng-show="PassOk"><span class="glyphicon glyphicon-ok"></span> Password match</span>
+            <td><span style="color: red" id="password-error" ng-show="!PassOk"><span class="glyphicon glyphicon-remove"></span> Password does not match</span>
+                <span style="color: green" id="password-ok" ng-show="PassOk"><span class="glyphicon glyphicon-ok"></span> Password match</span>
             </td>
         </tr>
         <tr>
@@ -30,8 +30,8 @@
             <td><span style="color: red" ng-show="myForm.email.$dirty && myForm.email.$error.email"><span class="glyphicon glyphicon-remove"> Invalid Email</span></td>
         </tr>
         <tr>
-            <td style="text-align: right"><button type="reset" class="btn btn-danger" ng-click="reset()">Reset Field</button></td>
-            <td style="text-align: right"><button type="submit" class="btn btn-success" ng-disabled="!PassOk || !UserOk">Register</button></td>
+            <td style="text-align: right"><button type="reset" id="reset" class="btn btn-danger" ng-click="reset()">Reset Field</button></td>
+            <td style="text-align: right"><button type="submit" id="register" class="btn btn-success" ng-disabled="!PassOk || !UserOk">Register</button></td>
         </tr>
     </table>
     </form>
